@@ -3,21 +3,21 @@ STACK_START!=printf "0x%08x" $$(($(SIZE) + $(SIZE)))
 MARCH?=rv32im
 MABI?=ilp32
 XLEN?=32
-PROGRAM?=nvdla
+PROGRAM?=dummy
+VALUEA?=0
+VALUEB?=0
 
 
 
 
-NVDLA_DIR?=/home/stud/lt25geja/nrt/nvdla-riscv-tapasco/nvdla
-STARTUP_DIR?=/home/stud/lt25geja/nrt/nvdla-riscv-tapasco/src/env
-TEST_SEARCH_DIR?=/home/stud/lt25geja/nrt/nvdla-riscv-tapasco/src/test
-RUNTIME_SEARCH_DIR?=/home/stud/lt25geja/nrt/nvdla-riscv-tapasco/src
-SOURCE_FILES?=$(RUNTIME_SEARCH_DIR)/port/std_syscall.c $(RUNTIME_SEARCH_DIR)/arch/riscv/device.c $(RUNTIME_SEARCH_DIR)/arch/riscv/csr.c $(RUNTIME_SEARCH_DIR)/arch/riscv/csr_mmio.c $(RUNTIME_SEARCH_DIR)/arch/riscv/trap.c $(RUNTIME_SEARCH_DIR)/drivers/htif.c
-NVDLA_SRC_FILES?=${NVDLA_DIR}/firmware/scheduler.c ${NVDLA_DIR}/firmware/engine.c ${NVDLA_DIR}/firmware/bdma.c ${NVDLA_DIR}/firmware/conv.c ${NVDLA_DIR}/firmware/sdp.c ${NVDLA_DIR}/firmware/cdp.c ${NVDLA_DIR}/firmware/pdp.c ${NVDLA_DIR}/firmware/rubik.c ${NVDLA_DIR}/firmware/cache.c ${NVDLA_DIR}/firmware/common.c ${NVDLA_DIR}/firmware/engine_data.c ${NVDLA_DIR}/firmware/engine_isr.c ${NVDLA_DIR}/firmware/engine_debug.c ${NVDLA_DIR}/port/riscv/nvdla_core_callbacks.c
-INCLUDE_FILES?=-I${NVDLA_DIR}/firmware/ -I${NVDLA_DIR}/firmware/include/ -I${NVDLA_DIR}/include/ -I${NVDLA_DIR}/port/riscv/include/ -I${STARTUP_DIR}/ariane/ -I${STARTUP_DIR}/common/ -I${STARTUP_DIR}/common/rv64/ -I$(RUNTIME_SEARCH_DIR)/include/ -I$(RUNTIME_SEARCH_DIR)/include/arch/riscv -I$(RUNTIME_SEARCH_DIR)/test/
+DUMMY_DIR?=/home/stud/lt25geja/dummy
+LIB_FILES?=
+FIRMWARE_FILES?=${DUMMY_DIR}/firmware/scheduler.c ${DUMMY_DIR}/firmware/engine.c ${DUMMY_DIR}/firmware/bdma.c ${DUMMY_DIR}/firmware/conv.c ${DUMMY_DIR}/firmware/sdp.c ${DUMMY_DIR}/firmware/cdp.c ${DUMMY_DIR}/firmware/pdp.c ${DUMMY_DIR}/firmware/rubik.c ${DUMMY_DIR}/firmware/cache.c ${DUMMY_DIR}/firmware/common.c ${DUMMY_DIR}/firmware/engine_data.c ${DUMMY_DIR}/firmware/engine_isr.c ${DUMMY_DIR}/firmware/engine_debug.c ${DUMMY_DIR}/firmware/nvdla_core_callbacks.c
+INCLUDE_FILES?=-I${DUMMY_DIR}/firmware/ -I$(DUMMY_DIR)/firmware/include/ -I${DUMMY_DIR}/lib/ -I${DUMMY_DIR}/lib/test/
 DEFINITIONS?=-DMAIN=0 -DATOMIC=0 -DTRAP=0 -DIRQ0=0 -DDLA_REG_TEST=1 -DMEM_TEST=1 -DTASK_TEST=1 -DNVDLA_INFO_ON=0 -DDEBUG_NETWORK_DATA=0 -DFPGA_LOG=0 -DSIM_LOG=1 -DQEMU_LOG=0
 
-RV_FLAGS:=-march=$(MARCH) -mabi=$(MABI) -fno-pic -Os -g --specs=nano.specs -nostartfiles -Werror -Wl,--relax -Wl,--gc-sections -mcmodel=medany $(DEFINITIONS)
+#RV_FLAGS:=-march=$(MARCH) -mabi=$(MABI) -fno-pic -Os -g --specs=nano.specs -nostartfiles -Werror -Wl,--relax -Wl,--gc-sections -mcmodel=medany $(INCLUDE_FILES) $(DEFINITIONS)
+RV_FLAGS:=-march=$(MARCH) -mabi=$(MABI) -fno-pic -Os -g -nostartfiles -Werror -Wl,--relax -Wl,--gc-sections $(INCLUDE_FILES) $(DEFINITIONS)
 
 ifndef SWERV_CCM
 	RV_FLAGS+= -T rv_$(SIZE).ld startup_$(SIZE)1.s
@@ -29,8 +29,8 @@ TOP:=`echo $(STACK_START) | cut -c3-7`
 BOTTOM:=`echo $(STACK_START) | cut -c8-10`
 
 program: setup
-	riscv32-unknown-elf-gcc $(RV_FLAGS) /home/stud/lt25geja/nvtest/nvdla_riscv/src/riscv/main.c -o nvdla.elf $(SOURCE_FILES) $(NVDLA_SRC_FILES)
-	      riscv32-unknown-elf-objcopy -O binary nvdla.elf nvdla.bin
+	riscv32-unknown-elf-gcc $(RV_FLAGS) /home/stud/lt25geja/dummy/firmware/main.c -D"value_a=$(VALUEA)" -D"value_b=$(VALUEB)" -o dummy.elf $(LIB_FILES) $(FIRMWARE_FILES)
+	      riscv32-unknown-elf-objcopy -O binary dummy.elf dummy.bin
 
 setup:
 	mkdir -p elf bin

@@ -11,19 +11,23 @@ SECTIONS
 	.text.init : {
 			* (.text.init);
 	} > ICCM
-	.text : {
-	      * (.text);
+	.text : SUBALIGN(4) {
+	      * (.text.*);
 	} > ICCM
-	.data : {
-	      * (.data);
+	.data : SUBALIGN(4) {
+	      * (.data.*);
+	      * (.sdata.*);
+	      * (.sdata2.*);
 	} > DCCM
-	.srodata : {
-	      * (.srodata);
+	.srodata : ALIGN(4) SUBALIGN(4) {
+	      * (.srodata.*);
 	} > DCCM
-	.rodata : {
-	      * (.rodata);
+	.rodata : ALIGN(4) {
+	      * (.rodata.*);
+	      . = ALIGN(4);
+	      LONG(0xDEADBEEF);
 	} > DCCM
 	.bss : {
-	     * (.bss);
+	     * (.bss.*);
 	} > DCCM
 }
