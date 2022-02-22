@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="6f701a53-a952-45cc-8f03-808ca2aaf9a4" name="UMD" defaultType="TOOL">
+      <configuration id="143b7e52-e31c-4318-86af-c7d1c69d1d90" name="UMD" toolchainName="Default">
+        <build type="TOOL">
+          <tool actionId="Tool_External Tools_UMD" />
+        </build>
+        <clean type="TOOL">
+          <tool actionId="Tool_External Tools_UMD" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>

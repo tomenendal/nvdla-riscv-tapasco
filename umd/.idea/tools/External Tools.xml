@@ -1,0 +1,9 @@
+<toolSet name="External Tools">
+  <tool name="UMD" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="$USER_HOME$/umd/sw/umd/out/apps/runtime/nvdla_runtime/nvdla_runtime" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/umd/sw/umd" />
+    </exec>
+  </tool>
+</toolSet>
